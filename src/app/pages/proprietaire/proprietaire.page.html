@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-grid>
+  <ion-row>
+    <ion-col size="8">
+      <ion-item>
+        <ion-label  style="font-weight: bold; color: #333;">
+          Propriétaire</ion-label>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2">
+      <ion-button expand="full"  (click)="toggleButton()" [ngClass]="{'default-button': buttonLabel === 'Non', 'active-button': buttonLabel === 'Oui'}">
+        {{ buttonLabel }}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+<div *ngIf="showInput">
+  <fieldset>
+  <ion-item class="input-item" >
+   <!-- <ion-label position="floating"></ion-label>-->
+    <ion-input  [(ngModel)]="loyerMensuel" label="Loyer Mensuel" type="number" label-placement="floating" fill="outline" placeholder="Entrer le loyer mensuel" ></ion-input>
+  </ion-item>
+  <!--<ion-col size="2">-->
+  <!-- <ion-button class="size" size="small" (click)="calculer()">Calculer</ion-button>-->
+  <!--</ion-col>-->
+  <ion-item class="input-item">
+    Valeur du batiment
+    <ion-input [(ngModel)]="resultat" [value]="resultat" label-placement="floating" fill="outline" readonly></ion-input>
+  </ion-item>
+</fieldset>
+
+    <ion-list>
+      <!-- Premier fieldset avec sous-checkboxes -->
+      <fieldset>
+        <legend>INCENDIE ET RISQUES ANNEXES</legend>
+        <ng-container *ngFor="let option of options1; let i = index">
+          <ion-item>
+            <ion-label>{{ option.label }}</ion-label>
+            <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 1)"></ion-checkbox>
+          </ion-item>
+
+          <!-- Affichage conditionnel des inputs pour les options principales du premier fieldset -->
+          <div *ngIf="option.showInputs && !option.showSubCheckboxes" class="input-container">
+            <ion-item>
+            <ion-item class="input-item" >
+              <ion-input placeholder="capital" type="number"></ion-input>
+            </ion-item>
+          <ion-item class="input-item" >
+              <ion-input placeholder="prime" type="number"></ion-input>
+            </ion-item>
+            </ion-item>
+          </div>
+
+          <!-- Affichage conditionnel des sous-options pour la troisième option du premier fieldset -->
+          <div *ngIf="option.showSubCheckboxes" class="sub-checkboxes-container">
+            <ng-container *ngFor="let subOption of option.subOptions">
+              <ion-item>
+                <ion-label>{{ subOption.label }}</ion-label>
+                <ion-checkbox slot="start" (ionChange)="subOption.showInputs = !subOption.showInputs"></ion-checkbox>
+              </ion-item>
+
+              <!-- Affichage conditionnel des inputs pour les sous-options -->
+              <div *ngIf="subOption.showInputs" class="input-container">
+                <ion-item>
+                  <ion-item class="input-item" >
+                  <ion-input placeholder="capital" type="number"></ion-input>
+                </ion-item>
+              <ion-item class="input-item" >
+                  <ion-input placeholder="prime" type="number"></ion-input>
+                </ion-item>
+                </ion-item>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <ion-item class="input-item" >
+
+           <ion-input  label="SOUS TOTAL" type="number"  fill="outline" ></ion-input>
+         </ion-item>
+      </fieldset>
+
+      <!-- Deuxième fieldset sans sous-checkboxes -->
+      <fieldset>
+        <legend>GARANTIES COMPLEMENTAIRES</legend>
+        <ng-container *ngFor="let option of options2; let i = index">
+          <ion-item>
+            <ion-label>{{ option.label }}</ion-label>
+            <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 2)"></ion-checkbox>
+          </ion-item>
+
+          <!-- Affichage conditionnel des inputs pour les options principales du deuxième fieldset -->
+          <div *ngIf="option.showInputs" class="input-container">
+            <ion-item>
+            <ion-item class="input-item">
+              <ion-input placeholder="capital" type="number"></ion-input>
+              </ion-item>
+              <ion-item class="input-item">
+              <ion-input placeholder="prime" type="number"></ion-input>
+            </ion-item>
+            </ion-item>
+          </div>
+        </ng-container>
+        <ion-item class="input-item" >
+
+          <ion-input  label="SOUS TOTAL" type="number"  fill="outline"  ></ion-input>
+        </ion-item>
+      </fieldset>
+
+      <fieldset>
+        <legend>RESPONSABILITE CIVILE FAMILIALE</legend>
+        <ng-container *ngFor="let option of options3; let i = index">
+          <ion-item>
+            <ion-label>{{ option.label }}</ion-label>
+            <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 3)"></ion-checkbox>
+          </ion-item>
+
+          <!-- Affichage conditionnel des inputs pour les options principales du deuxième fieldset -->
+          <div *ngIf="option.showInputs" class="input-container">
+            <ion-item>
+              <ion-item class="input-item">
+              <ion-input placeholder="capital" type="number"></ion-input>
+            </ion-item>
+          <ion-item class="input-item">
+              <ion-input placeholder="prime" type="number"></ion-input>
+            </ion-item>
+            </ion-item>
+          </div>
+        </ng-container>
+        <ion-item class="input-item" >
+
+          <ion-input  label="SOUS TOTAL" type="number"  fill="outline"  ></ion-input>
+        </ion-item>
+      </fieldset>
+    </ion-list>
+
+</div>
+</ion-content>

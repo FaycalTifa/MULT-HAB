@@ -8,9 +8,14 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'proprietaire',
     pathMatch: 'full'
   },
+  {
+    path: 'proprietaire',
+    loadChildren: () => import('./pages/proprietaire/proprietaire.module').then( m => m.ProprietairePageModule)
+  },
+
 ];
 
 @NgModule({
