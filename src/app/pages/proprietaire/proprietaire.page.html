@@ -1,0 +1,325 @@
+<!--
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Votre Titre</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="8">
+                <ion-item>
+                    <ion-label style="font-weight: bold; color: #333;">Propriétaire</ion-label>
+                </ion-item>
+                <ion-button expand="full" (click)="toggleButton()"
+                            [ngClass]="{'default-button': buttonLabel === 'Non', 'active-button': buttonLabel === 'Oui'}">
+                    {{ buttonLabel }}
+                </ion-button>
+            </ion-col>
+            <ion-col size="2">
+                &lt;!&ndash; Autre contenu ici &ndash;&gt;
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <div>
+        <ion-list>
+            &lt;!&ndash; Premier fieldset avec sous-checkboxes &ndash;&gt;
+            <fieldset>
+                <legend>INCENDIE ET RISQUES ANNEXES</legend>
+
+                <ng-container *ngFor="let option of options1; let i = index">
+                    <ion-item>
+                        <ion-label>{{ option.label }}</ion-label>
+                        <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 1)"></ion-checkbox>
+                    </ion-item>
+
+                    &lt;!&ndash; Affichage conditionnel des inputs pour les options principales du premier fieldset &ndash;&gt;
+                    <div *ngIf="option.showInputs && !option.showSubCheckboxes" class="input-container">
+                        <ion-item>
+                            <ion-item class="input-item">
+                                <ion-input id="capital-{{option.label}}" placeholder="capital"
+                                           type="number"></ion-input>
+                            </ion-item>
+                            <ion-item class="input-item">
+                                <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number"
+                                           readonly></ion-input>
+                            </ion-item>
+                        </ion-item>
+                    </div>
+
+                    &lt;!&ndash; Affichage conditionnel des sous-options pour certaines options &ndash;&gt;
+                    <div *ngIf="option.showSubCheckboxes" class="sub-checkboxes-container">
+                        <ng-container *ngFor="let subOption of option.subOptions">
+                            <ion-item>
+                                <ion-label>{{ subOption.label }}</ion-label>
+                                <ion-checkbox slot="start"
+                                              (ionChange)="subOption.showInputs = !subOption.showInputs"></ion-checkbox>
+                            </ion-item>
+
+                            &lt;!&ndash; Affichage conditionnel des inputs pour les sous-options &ndash;&gt;
+                            <div *ngIf="subOption.showInputs" class="input-container">
+                                <ion-item>
+                                    <ion-item class="input-item">
+                                        <ion-input id="sub-capital-{{subOption.label}}" placeholder="capital"
+                                                   type="number"></ion-input>
+                                    </ion-item>
+                                    <ion-item class="input-item">
+                                        <ion-input [value]="subOption.calculatedCapital" placeholder="prime"
+                                                   type="number" readonly></ion-input>
+                                    </ion-item>
+                                </ion-item>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+
+                <ion-item class="input-item">
+                    <ion-input [value]="sousTotal1" placeholder="SOUS TOTAL" type="number" fill="outline"
+                               readonly></ion-input>
+                </ion-item>
+            </fieldset>
+
+            &lt;!&ndash; Deuxième fieldset sans sous-checkboxes &ndash;&gt;
+            <fieldset>
+                <legend>GARANTIES COMPLEMENTAIRES</legend>
+                <ng-container *ngFor="let option of options2; let i = index">
+                    <ion-item>
+                        <ion-label>{{ option.label }}</ion-label>
+                        <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 2)"></ion-checkbox>
+                    </ion-item>
+
+                    &lt;!&ndash; Affichage conditionnel des inputs pour les options principales du deuxième fieldset &ndash;&gt;
+                    <div *ngIf="option.showInputs" class="input-container">
+                        <ion-item>
+                            <ion-item class="input-item">
+                                <ion-input id="capital-{{option.label}}" placeholder="capital"
+                                           type="number"></ion-input>
+                            </ion-item>
+                            <ion-item class="input-item">
+                                <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number"
+                                           readonly></ion-input>
+                            </ion-item>
+                        </ion-item>
+                    </div>
+                </ng-container>
+                <ion-item class="input-item">
+                    <ion-input [value]="sousTotal2" placeholder="SOUS TOTAL" type="number" fill="outline"
+                               readonly></ion-input>
+                </ion-item>
+            </fieldset>
+
+            <fieldset>
+                <legend>RESPONSABILITE CIVILE FAMILIALE</legend>
+                <ng-container *ngFor="let option of options3; let i = index">
+                    <ion-item>
+                        <ion-label>{{ option.label }}</ion-label>
+                        <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 3)"></ion-checkbox>
+                    </ion-item>
+
+                    <div *ngIf="option.showInputs" class="input-container">
+                        <ion-item>
+                            <ion-input id="capital-{{option.label}}" placeholder="capital" type="number"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number"
+                                       readonly></ion-input>
+                        </ion-item>
+                    </div>
+                </ng-container>
+                <ion-item>
+                    <ion-input [value]="sousTotal3" placeholder="SOUS TOTAL" type="number" fill="outline"
+                               readonly></ion-input>
+                </ion-item>
+            </fieldset>
+        </ion-list>
+        <fieldset>
+            <legend>RECAPITULATIF</legend>
+            <ng-container>
+
+                <div>
+                    <ion-label> PRIME NETTE :</ion-label>
+                    <ion-label> {{this.primeNette}} </ion-label>
+                </div>
+                <div>
+                    <ion-label> ACCESSOIRE :</ion-label>
+                    <ion-label> {{this.accessoire}} </ion-label>
+                </div>
+                <div>
+                    <ion-label> TAXE :</ion-label>
+                    <ion-label> {{this.taxeTotale}} </ion-label>
+                </div>
+                <div>
+                    <ion-label> PRIME TTC :</ion-label>
+                    <ion-label> {{this.primeTtc}} </ion-label>
+                </div>
+
+            </ng-container>
+
+        </fieldset>
+        <ion-button expand="full" (click)="calculer()">Calculer</ion-button>
+    </div>
+</ion-content>
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Calcul de Prime</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="8">
+                <ion-item>
+                    <ion-label style="font-weight: bold; color: #333;">Propriétaire</ion-label>
+                </ion-item>
+                <ion-button expand="full" (click)="toggleButton()"
+                            [ngClass]="{'default-button': buttonLabel === 'Non', 'active-button': buttonLabel === 'Oui'}">
+                    {{ buttonLabel }}
+                </ion-button>
+            </ion-col>
+            <ion-col size="2">
+                <!-- Placeholder pour du contenu supplémentaire -->
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-list>
+        <!-- Premier fieldset avec sous-checkboxes -->
+        <fieldset>
+            <legend>INCENDIE ET RISQUES ANNEXES</legend>
+
+            <ng-container *ngFor="let option of options1; let i = index">
+                <ion-item>
+                    <ion-label>{{ option.label }}</ion-label>
+                    <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 1)"></ion-checkbox>
+                </ion-item>
+
+                <!-- Affichage conditionnel des inputs pour les options principales du premier fieldset -->
+                <div *ngIf="option.showInputs && !option.showSubCheckboxes" class="input-container">
+                    <ion-item>
+                        <ion-input id="capital-{{option.label}}" placeholder="capital" type="number"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number" readonly></ion-input>
+                    </ion-item>
+                </div>
+
+                <!-- Affichage conditionnel des sous-options pour certaines options -->
+                <div *ngIf="option.showSubCheckboxes" class="sub-checkboxes-container">
+                    <ng-container *ngFor="let subOption of option.subOptions">
+                        <ion-item>
+                            <ion-label>{{ subOption.label }}</ion-label>
+                            <ion-checkbox slot="start" (ionChange)="subOption.showInputs = !subOption.showInputs"></ion-checkbox>
+                        </ion-item>
+
+                        <!-- Affichage conditionnel des inputs pour les sous-options -->
+                        <div *ngIf="subOption.showInputs" class="input-container">
+                            <ion-item>
+                                <ion-input id="sub-capital-{{subOption.label}}" placeholder="capital" type="number"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input [value]="subOption.calculatedCapital" placeholder="prime" type="number" readonly></ion-input>
+                            </ion-item>
+                        </div>
+                    </ng-container>
+                </div>
+
+            </ng-container>
+
+            <!-- Sous-total pour le premier fieldset -->
+            <ion-item>
+                <ion-input [value]="sousTotal1" placeholder="SOUS TOTAL" type="number" readonly></ion-input>
+            </ion-item>
+        </fieldset>
+
+        <!-- Deuxième fieldset sans sous-checkboxes -->
+        <fieldset>
+            <legend>GARANTIES COMPLEMENTAIRES</legend>
+
+            <ng-container *ngFor="let option of options2; let i = index">
+                <ion-item>
+                    <ion-label>{{ option.label }}</ion-label>
+                    <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 2)"></ion-checkbox>
+                </ion-item>
+
+                <!-- Affichage conditionnel des inputs pour les options principales du deuxième fieldset -->
+                <div *ngIf="option.showInputs" class="input-container">
+                    <ion-item>
+                        <ion-input id="capital-{{option.label}}" placeholder="capital" type="number"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number" readonly></ion-input>
+                    </ion-item>
+                </div>
+            </ng-container>
+
+            <!-- Sous-total pour le deuxième fieldset -->
+            <ion-item>
+                <ion-input [value]="sousTotal2" placeholder="SOUS TOTAL" type="number" readonly></ion-input>
+            </ion-item>
+        </fieldset>
+
+        <!-- Troisième fieldset sans sous-checkboxes -->
+        <fieldset>
+            <legend>RESPONSABILITE CIVILE FAMILIALE</legend>
+
+            <ng-container *ngFor="let option of options3; let i = index">
+                <ion-item>
+                    <ion-label>{{ option.label }}</ion-label>
+                    <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 3)"></ion-checkbox>
+                </ion-item>
+
+                <!-- Affichage conditionnel des inputs pour les options principales du troisième fieldset -->
+                <div *ngIf="option.showInputs" class="input-container">
+                    <ion-item>
+                        <ion-input id="capital-{{option.label}}" placeholder="capital" type="number"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input [value]="option.calculatedCapital" placeholder="prime" type="number" readonly></ion-input>
+                    </ion-item>
+                </div>
+            </ng-container>
+
+            <!-- Sous-total pour le troisième fieldset -->
+            <ion-item>
+                <ion-input [value]="sousTotal3" placeholder="SOUS TOTAL" type="number" readonly></ion-input>
+            </ion-item>
+        </fieldset>
+
+        <!-- Récapitulatif -->
+        <fieldset>
+            <legend>RÉCAPITULATIF</legend>
+            <ion-item>
+                <ion-label> PRIME NETTE :</ion-label>
+                <ion-label> {{ primeNette }} </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label> ACCESSOIRE :</ion-label>
+                <ion-label> {{ accessoire }} </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label> TAXE :</ion-label>
+                <ion-label> {{ taxeTotale }} </ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label> PRIME TTC :</ion-label>
+                <ion-label> {{ primeTtc }} </ion-label>
+            </ion-item>
+        </fieldset>
+
+    </ion-list>
+
+    <ion-row>
+        <ion-col size="6">
+            <ion-button expand="full" (click)="calculer()">Calculer</ion-button>
+        </ion-col>
+        <ion-col size="6">
+            <ion-button expand="full" (click)="resetFields()" color="danger">Réinitialiser</ion-button>
+        </ion-col>
+    </ion-row>
+
+
+</ion-content>

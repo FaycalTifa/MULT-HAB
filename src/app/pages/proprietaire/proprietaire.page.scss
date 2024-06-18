@@ -1,0 +1,93 @@
+ion-item {
+  margin-top: 20px;
+}
+
+.default-button {
+  --background: gray;
+}
+
+.active-button {
+  --background: blue;
+}
+.size {
+border: 10px;
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.input-item {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.input-item:last-child {
+  margin-right: 0;
+}
+.nested-container {
+  margin-left: 20px; /* Indentation for nested items */
+  margin-top: 10px;
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.input-item {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.input-item:last-child {
+  margin-right: 0;
+}
+fieldset {
+  border: 5px solid #900505;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-radius: 5px;
+}
+
+legend {
+  font-weight: bold;
+  padding: 0 10px;
+}
+.border{
+  border-color: #900505;
+}
+.sub-checkboxes-container {
+  margin-top: 10px; /* Espacement entre la checkbox principale et les sub-checkboxes */
+  padding-left: 20px; /* Indentation pour les sub-checkboxes */
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px; /* Espacement entre la sub-checkbox et les inputs */
+}
+
+ion-input {
+  flex: 1;
+  margin-left: 5px; /* Espacement entre les deux inputs */
+
+}
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px; /* Espacement entre la checkbox et les inputs */
+}
+
+ion-input {
+  flex: 1;
+  margin-left: 5px; /* Espacement entre les deux inputs */
+}
+
+.sub-checkboxes-container {
+  margin-top: 10px; /* Espacement entre les checkbox principales et les sous-checkboxes */
+  padding-left: 20px; /* Indentation pour les sous-checkboxes */
+}
