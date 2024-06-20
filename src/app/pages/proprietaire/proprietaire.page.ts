@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild  } from '@angular/core';
+
+declare const require: any;
+const html2pdf = require('html2pdf.js');
 
 interface Option {
   label: string;
@@ -22,6 +25,9 @@ interface SubOption {
   styleUrls: ['./proprietaire.page.scss'],
 })
 export class ProprietairePage implements OnInit {
+  @ViewChild('content', { static: false })
+  content!: ElementRef;
+  constructor() {}
 
   buttonLabel: string = 'Oui';
   showInput: boolean = false;
@@ -62,18 +68,112 @@ export class ProprietairePage implements OnInit {
     { label: 'Dégâts des eaux', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Bris de glaces', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Vol avec effraction du contenu en général (mobilier et matériel)', showInputs: false, capitalMultiplier: (5 / 1000) , calculatedCapital: 0 },
-    { label: 'Déteriorations mobilieres et immobilières conséqutives à un vol ou une tentative de vol', showInputs: false, capitalMultiplier: 0 , calculatedCapital: 1000 },
+    { label: 'Déteriorations mobilieres et immobilières conséqutives à un vol', showInputs: false, capitalMultiplier: 0 , calculatedCapital: 1000 },
   ];
+
+
 
   options3: Option[] = [
     { label: 'Dommages corporels', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Dommages matériels et immatériels consécutifs', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Défense / Recours', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
   ];
+  ngOnInit() {
 
-  constructor() {}
+  }
+  // Méthode pour générer le PDF
+  generatePDF() {
+    const options = {
+      margin: [1, 0.5, 0.5, 0.5],
+      filename: 'myfile.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: 'blue',
+        logging: true
+      },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
 
-  ngOnInit() {}
+    // Calculer les primes avant de générer le PDF
+    this.calculer();
+
+    // Utiliser html2pdf pour générer le PDF
+    html2pdf()
+      .from(this.getContentAsHtml())
+      .set(options)
+      .save();
+  }
+
+  getContentAsHtml(): HTMLElement {
+    const contentDiv = document.createElement('div');
+    contentDiv.innerHTML = `
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+          <tr style="border-bottom: 1px solid #ddd;" >
+            <th style="border: 1px solid #ddd; padding: 8px;">Label</th>
+
+            <th style="border: 1px solid #ddd; padding: 8px;">Prime</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${this.options1.map(option => `
+            <tr  style="border-bottom: 1px solid #ddd;">
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
+            </tr>
+            ${option.subOptions && option.showSubCheckboxes ? option.subOptions.map(subOption => `
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="border: 1px solid #ddd; padding: 8px;">${subOption.label}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${subOption.showInputs ? subOption.calculatedCapital : '-'}</td>
+              </tr>
+            `).join('') : ''}
+          `).join('')}
+          <tr style="border-bottom: 1px solid #ddd;">
+            <td style="border: 1px solid #ddd; padding: 8px; colspan="2">Sous-total</td>
+            <td style="border: 5px solid #ddd; padding: 8px;">${this.sousTotal1}</td>
+          </tr>
+           ${this.options2.map(option => `
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
+            </tr>
+            `).join('')}
+            <tr style="border-bottom: 1px solid #ddd;">
+            <td style="border: 1px solid #ddd; padding: 8px;" >Sous-total</td>
+            <td style="border: 5px solid #ddd; padding: 8px;">${this.sousTotal2}</td>
+          </tr>
+           ${this.options3.map(option => `
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 5px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
+            </tr>
+            `).join('')}
+            <tr style="border-bottom: 1px solid #ddd;">
+            <td style="border: 1px solid #ddd; padding: 8px;" >Sous-total</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${this.sousTotal3}</td>
+          </tr>
+
+          <tr>
+          <td style="border: 1px solid #ddd; padding: 2px; colspan="2" >Taxe</td>
+            <td style="border: 1px solid #ddd; padding: 8px;">${this.taxeTotale}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px; colspan="2" >Prime TTC</td>
+            <td style="border: 5px solid #ddd; padding: 8px;">${this.primeTtc}</td>
+          </tr>
+          <tr>
+          <td style="border: 1px solid #ddd; padding: 2px; colspan="2" >Prime Nette</td>
+            <td style="border: 5px solid #ddd; padding: 8px;">${this.primeNette}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    `;
+    return contentDiv;
+  }
+
 
   toggleInputs(option: Option, index: number, fieldset: number) {
     option.showInputs = !option.showInputs;
@@ -221,6 +321,7 @@ export class ProprietairePage implements OnInit {
 
 
 
-}
+  }
+
 
 

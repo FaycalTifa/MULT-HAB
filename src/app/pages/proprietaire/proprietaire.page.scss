@@ -91,3 +91,97 @@ ion-input {
   margin-top: 10px; /* Espacement entre les checkbox principales et les sous-checkboxes */
   padding-left: 20px; /* Indentation pour les sous-checkboxes */
 }
+ion-content {
+
+  background-image: url('/assets/icon/favicon.png');
+  background-size: cover;
+  background-position: center;
+   /* Ajustez cette valeur pour changer la transparence */
+}
+
+ion-toolbar {
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  right: 50px; /* Ajustez cette valeur pour positionner horizontalement */
+  top: 50%;
+  transform: translateY(-50%);
+  height: 70px; /* Ajustez la taille du logo selon vos besoins */
+}
+/* styles.scss (ou votre fichier de style global) */
+
+/* Style du tableau */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Style des en-têtes de colonne */
+.custom-table th {
+  background-color: #a03838;
+  padding: 10px;
+  text-align: left;
+}
+
+/* Style des cellules */
+.custom-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Style pour une ligne alternée */
+.custom-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Style pour les boutons dans le tableau */
+.custom-table ion-button {
+  --background: #007bff;
+  --color: #fff;
+  --border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+/* styles.scss (ou votre fichier de style global) */
+
+/* Style pour la page blanche */
+.page-blank {
+  background-color: #ffffff; /* Couleur de fond blanche */
+  padding: 20px; /* Marge intérieure pour le contenu */
+  font-family: Arial, sans-serif; /* Police de caractères */
+  font-size: 12px; /* Taille de la police */
+  color: #333333; /* Couleur du texte */
+}
+#options-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#options-table th, #options-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#options-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+:host {
+  .table-row {
+      border-bottom: 1px solid #ddd613;
+  }
+}
+table tr.table-row {
+  border-bottom: 1px solid #b60d0d;
+}
+.table-cell {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.table-row:last-child .table-cell {
+  border-bottom: 1px solid #ddd;
+}
