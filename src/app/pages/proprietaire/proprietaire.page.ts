@@ -64,7 +64,7 @@ export class ProprietairePage implements OnInit {
   ];
 
   options2: Option[] = [
-    { label: 'Dommages aux appareils électriques', showInputs: false, capitalMultiplier: (4 / 1000) , calculatedCapital: 0 },
+    { label: 'Dommages aux appareils électriques', showInputs: false, capitalMultiplier: (4 / 1000) , calculatedCapital: 0},
     { label: 'Dégâts des eaux', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Bris de glaces', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Vol avec effraction du contenu en général (mobilier et matériel)', showInputs: false, capitalMultiplier: (5 / 1000) , calculatedCapital: 0 },
@@ -113,7 +113,7 @@ export class ProprietairePage implements OnInit {
         <thead>
           <tr style="border-bottom: 1px solid #ddd;" >
             <th style="border: 1px solid #ddd; padding: 8px;">Label</th>
-
+            <th style="border: 1px solid #ddd; padding: 8px;">Capitaux</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Prime</th>
           </tr>
         </thead>
@@ -121,37 +121,48 @@ export class ProprietairePage implements OnInit {
           ${this.options1.map(option => `
             <tr  style="border-bottom: 1px solid #ddd;">
               <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.showInputs ?
+               (document.getElementById(`capital-${option.label}`) as HTMLInputElement).value : '-'}</td>
               <td style="border: 1px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
+
             </tr>
-            ${option.subOptions && option.showSubCheckboxes ? option.subOptions.map(subOption => `
-              <tr style="border-bottom: 1px solid #ddd;">
-                <td style="border: 1px solid #ddd; padding: 8px;">${subOption.label}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${subOption.showInputs ? subOption.calculatedCapital : '-'}</td>
-              </tr>
-            `).join('') : ''}
-          `).join('')}
-          <tr style="border-bottom: 1px solid #ddd;">
-            <td style="border: 1px solid #ddd; padding: 8px; colspan="2">Sous-total</td>
-            <td style="border: 5px solid #ddd; padding: 8px;">${this.sousTotal1}</td>
-          </tr>
+              ${option.subOptions && option.showSubCheckboxes ? option.subOptions.map(subOption => `
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="border: 1px solid #ddd; padding: 8px;">${subOption.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">
+                ${subOption.showInputs ? (document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement).value : '-'}
+              </td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${subOption.calculatedCapital}</td>
+            </tr>
+          `).join('') : ''}
+        `).join('')}
+            <!-- Ajoutez ici le calcul du sous-total pour options1 -->
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;" colspan="2">Sous-total</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${this.sousTotal1}</td>
+        </tr>
            ${this.options2.map(option => `
             <tr style="border-bottom: 1px solid #ddd;">
               <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.showInputs ?
+               (document.getElementById(`capital-${option.label}`) as HTMLInputElement).value : '-'}</td>
               <td style="border: 1px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
             </tr>
             `).join('')}
             <tr style="border-bottom: 1px solid #ddd;">
-            <td style="border: 1px solid #ddd; padding: 8px;" >Sous-total</td>
+            <td style="border: 1px solid #ddd; padding: 8px;" colspan="2" >Sous-total</td>
             <td style="border: 5px solid #ddd; padding: 8px;">${this.sousTotal2}</td>
           </tr>
            ${this.options3.map(option => `
             <tr style="border-bottom: 1px solid #ddd;">
               <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.showInputs ?
+              (document.getElementById(`capital-${option.label}`) as HTMLInputElement).value : '-'}</td>
               <td style="border: 5px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
             </tr>
             `).join('')}
             <tr style="border-bottom: 1px solid #ddd;">
-            <td style="border: 1px solid #ddd; padding: 8px;" >Sous-total</td>
+            <td style="border: 1px solid #ddd; padding: 8px;" colspan="2" >Sous-total</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${this.sousTotal3}</td>
           </tr>
 
@@ -171,7 +182,27 @@ export class ProprietairePage implements OnInit {
         </tbody>
       </table>
     `;
+
+
     return contentDiv;
+  }
+
+  // Exemple de mise à jour de subOption.calculatedCapital
+calculateCalculatedCapital(subOption: any) {
+  // Implémentez votre logique de calcul ici
+  subOption.calculatedCapital = this.calculateSomeValue(subOption);
+}
+
+calculateSomeValue(subOption: any): number {
+  // Logique de calcul pour subOption.calculatedCapital
+  // Par exemple :
+  return subOption.value1 + subOption.value2;
+}
+
+  // Méthode pour récupérer la valeur de la sous-option
+  getSubOptionValue(subOption: any): string {
+    const inputElement = document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement;
+    return inputElement ? inputElement.value : '-';
   }
 
 
@@ -228,6 +259,7 @@ export class ProprietairePage implements OnInit {
                 });
             }
         });
+
 
         // Calcul pour options2
         this.options2.forEach(option => {
