@@ -185,3 +185,11 @@ table tr.table-row {
 .table-row:last-child .table-cell {
   border-bottom: 1px solid #ddd;
 }
+.containe{
+  display: flex;
+  width: 50px;
+  margin: auto;
+}
+.float{
+  right: 0;
+}

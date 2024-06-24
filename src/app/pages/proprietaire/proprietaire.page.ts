@@ -1,4 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild  } from '@angular/core';
+import * as QRCode from 'qrcode';
 
 declare const require: any;
 const html2pdf = require('html2pdf.js');
@@ -25,6 +26,7 @@ interface SubOption {
   styleUrls: ['./proprietaire.page.scss'],
 })
 export class ProprietairePage implements OnInit {
+  qrDataURL!: string;
   @ViewChild('content', { static: false })
   content!: ElementRef;
   constructor() {}
@@ -78,9 +80,6 @@ export class ProprietairePage implements OnInit {
     { label: 'Dommages matériels et immatériels consécutifs', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Défense / Recours', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
   ];
-  ngOnInit() {
-
-  }
   // Méthode pour générer le PDF
   generatePDF() {
     const options = {
@@ -111,10 +110,18 @@ export class ProprietairePage implements OnInit {
     contentDiv.innerHTML = `
       <table style="border-collapse: collapse; width: 100%;">
         <thead>
+         <div>
+         <img class="containe" style="width:65px" src="/assets/icon/uab.jpeg" />
+          <img class="float" style="width:55px" src="${this.qrDataURL}" />
+        <h1>PROPOSITION D'ASSURANCE MULTIRISQUE HABITATION</h1>
+
+
+
+      </div>
           <tr style="border-bottom: 1px solid #ddd;" >
-            <th style="border: 1px solid #ddd; padding: 8px;">Label</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Désignations</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Capitaux</th>
-            <th style="border: 1px solid #ddd; padding: 8px;">Prime</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Primes</th>
           </tr>
         </thead>
         <tbody>
@@ -350,6 +357,21 @@ calculateSomeValue(subOption: any): number {
         this.taxeTotale = 0;
         this.primeTtc = 0;
     }
+
+    async generateQRCode(url: string) {
+      try {
+        this.qrDataURL = await QRCode.toDataURL(url);
+        console.log('QR Code generated:', this.qrDataURL);
+      } catch (error) {
+        console.error('Error generating QR Code:', error);
+      }
+    }
+
+    // Appeler cette méthode pour générer le QR Code avec une URL spécifique
+    ngOnInit() {
+      this.generateQRCode('https://example.com');
+    }
+
 
 
 
