@@ -71,13 +71,12 @@ export class ProprietairePage implements OnInit {
     { label: 'Déteriorations mobilieres et immobilières conséqutives à un vol', showInputs: false, capitalMultiplier: 0 , calculatedCapital: 1000 },
   ];
 
-
-
   options3: Option[] = [
     { label: 'Dommages corporels', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Dommages matériels et immatériels consécutifs', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Défense / Recours', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
   ];
+
   ngOnInit() {
 
   }
