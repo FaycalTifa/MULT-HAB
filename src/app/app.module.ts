@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NgxPrintModule } from 'ngx-print';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
