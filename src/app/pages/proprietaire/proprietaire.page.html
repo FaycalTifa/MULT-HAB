@@ -197,6 +197,7 @@
             <ng-container *ngFor="let option of options1; let i = index">
                 <ion-item>
                     <ion-label>{{ option.label }}</ion-label>
+
                     <ion-checkbox slot="start" (ionChange)="toggleInputs(option, i, 1)"></ion-checkbox>
                 </ion-item>
 
@@ -313,6 +314,16 @@
                 <ion-label> {{ primeTtc }} </ion-label>
             </ion-item>
         </fieldset>
+        <!--ChampInput a remplir pour dommage corporel-->
+        <fieldset>
+          <!-- Insérez ici le contenu supplémentaire du formulaire ou d'autres éléments -->
+  <ion-item>
+
+    <ion-input placeholder="Remarque pour dommages corporels" [(ngModel)]="donneesSaisies"></ion-input>
+  </ion-item>
+
+
+        </fieldset>
 
     </ion-list>
 
@@ -327,6 +338,7 @@
 
 
     <!---->
-
-  <ion-button (click)="generatePDF()">Générer PDF</ion-button>
+    <ion-col size="8">
+  <ion-button expand="full" (click)="generatePDF()">Générer PDF</ion-button>
+    </ion-col>
 </ion-content>

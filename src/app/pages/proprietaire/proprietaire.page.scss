@@ -32,12 +32,6 @@ border: 10px;
   margin-top: 10px;
 }
 
-.input-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
 .input-item {
   flex: 1;
   margin-right: 10px;
@@ -47,7 +41,7 @@ border: 10px;
   margin-right: 0;
 }
 fieldset {
-  border: 5px solid #900505;
+  border: 5px solid #29c1a0;
   padding: 1em;
   margin-bottom: 1em;
   border-radius: 5px;
@@ -90,13 +84,6 @@ ion-input {
 .sub-checkboxes-container {
   margin-top: 10px; /* Espacement entre les checkbox principales et les sous-checkboxes */
   padding-left: 20px; /* Indentation pour les sous-checkboxes */
-}
-ion-content {
-
-  background-image: url('/assets/icon/favicon.png');
-  background-size: cover;
-  background-position: center;
-   /* Ajustez cette valeur pour changer la transparence */
 }
 
 ion-toolbar {
@@ -187,9 +174,7 @@ table tr.table-row {
 }
 .containe{
   display: flex;
-  width: 50px;
+  width: 20px;
   margin: auto;
 }
-.float{
-  right: 0;
-}
+

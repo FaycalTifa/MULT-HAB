@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild  } from '@angular/core';
-import * as QRCode from 'qrcode';
+
 
 declare const require: any;
 const html2pdf = require('html2pdf.js');
@@ -46,6 +46,8 @@ export class ProprietairePage implements OnInit {
   accessoire: number = 5000;
   taxe1: number = 0;
   taxe2: number = 0;
+  donneesSaisies: string = '';
+
 
   options1: Option[] = [
     { label: 'Batiment / risque locatif', showInputs: false, capitalMultiplier: (0.5 / 1000) , calculatedCapital: 0 },
@@ -73,13 +75,13 @@ export class ProprietairePage implements OnInit {
     { label: 'Déteriorations mobilieres et immobilières conséqutives à un vol', showInputs: false, capitalMultiplier: 0 , calculatedCapital: 1000 },
   ];
 
-
-
   options3: Option[] = [
-    { label: 'Dommages corporels', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
+    { label: 'Dommages corporels *dont intoxications alimentaires', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Dommages matériels et immatériels consécutifs', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
     { label: 'Défense / Recours', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
   ];
+
+
   // Méthode pour générer le PDF
   generatePDF() {
     const options = {
@@ -95,6 +97,8 @@ export class ProprietairePage implements OnInit {
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
 
+
+
     // Calculer les primes avant de générer le PDF
     this.calculer();
 
@@ -107,15 +111,14 @@ export class ProprietairePage implements OnInit {
 
   getContentAsHtml(): HTMLElement {
     const contentDiv = document.createElement('div');
+
     contentDiv.innerHTML = `
       <table style="border-collapse: collapse; width: 100%;">
         <thead>
          <div>
-         <img class="containe" style="width:65px" src="/assets/icon/uab.jpeg" />
-          <img class="float" style="width:55px" src="${this.qrDataURL}" />
+         <img style="width:75px ; height:75px" src="/assets/icon/uab.jpeg" />
+
         <h1>PROPOSITION D'ASSURANCE MULTIRISQUE HABITATION</h1>
-
-
 
       </div>
           <tr style="border-bottom: 1px solid #ddd;" >
@@ -185,9 +188,13 @@ export class ProprietairePage implements OnInit {
           <td style="border: 1px solid #ddd; padding: 2px; colspan="2" >Prime Nette</td>
             <td style="border: 5px solid #ddd; padding: 8px;">${this.primeNette}</td>
           </tr>
-
         </tbody>
       </table>
+      <div>
+      <label for="donneesSaisies">NOTONS BIEN:</label>
+      <input placeholder="Remarque pour dommages corporels"
+       id="donneesSaisies" type="text" value="${this.donneesSaisies}" disabled>
+    </div>
     `;
 
 
@@ -358,18 +365,11 @@ calculateSomeValue(subOption: any): number {
         this.primeTtc = 0;
     }
 
-    async generateQRCode(url: string) {
-      try {
-        this.qrDataURL = await QRCode.toDataURL(url);
-        console.log('QR Code generated:', this.qrDataURL);
-      } catch (error) {
-        console.error('Error generating QR Code:', error);
-      }
-    }
+
 
     // Appeler cette méthode pour générer le QR Code avec une URL spécifique
     ngOnInit() {
-      this.generateQRCode('https://example.com');
+
     }
 
 
