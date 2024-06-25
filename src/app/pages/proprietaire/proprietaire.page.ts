@@ -368,9 +368,7 @@ calculateSomeValue(subOption: any): number {
 
 
     // Appeler cette méthode pour générer le QR Code avec une URL spécifique
-    ngOnInit() {
 
-    }
 
 
 
