@@ -11,6 +11,8 @@ interface Option {
   calculatedCapital?: number;
   showSubCheckboxes?: boolean;
   subOptions?: SubOption[];
+   enteredValue?: number;
+
 }
 
 interface SubOption {
@@ -18,6 +20,7 @@ interface SubOption {
   showInputs: boolean;
   capitalMultiplier: number;
   calculatedCapital?: number;
+  enteredValue?: number;
 }
 
 @Component({
@@ -50,8 +53,8 @@ export class ProprietairePage implements OnInit {
 
 
   options1: Option[] = [
-    { label: 'Batiment / risque locatif', showInputs: false, capitalMultiplier: (0.5 / 1000) , calculatedCapital: 0 },
-    { label: 'Ensemble contenu', showInputs: false, capitalMultiplier: (0.5 / 1000) , calculatedCapital: 0 },
+    { label: 'Batiment / risque locatif', showInputs: false, capitalMultiplier: (0.5 / 1000), calculatedCapital: 0 },
+    { label: 'Ensemble contenu', showInputs: false, capitalMultiplier: (0.5 / 1000), calculatedCapital: 0 },
     {
       label: 'Frais et pertes divers',
       showInputs: false,
@@ -64,8 +67,8 @@ export class ProprietairePage implements OnInit {
         { label: 'Honoraire', showInputs: false, capitalMultiplier: (0.3 / 1000) , calculatedCapital: 0 },
       ]
     },
-    { label: 'Toutes explosions', showInputs: false, capitalMultiplier: 0 , calculatedCapital: 0 },
-  ];
+    { label: 'Toutes explosions', showInputs: false, capitalMultiplier: 0, calculatedCapital: 0 },
+   ];
 
   options2: Option[] = [
     { label: 'Dommages aux appareils électriques', showInputs: false, capitalMultiplier: (4 / 1000) , calculatedCapital: 0},
@@ -81,6 +84,21 @@ export class ProprietairePage implements OnInit {
     { label: 'Défense / Recours', showInputs: false, capitalMultiplier: (1 / 1000) , calculatedCapital: 0 },
   ];
 
+
+   // Méthode pour recalculer la somme de "Batiment / risque locatif" et "Ensemble contenu"
+   calculateSommeBatimentEnsemble(): string {
+    const batimentRisqueLocatif = this.options1.find(option => option.label === 'Batiment / risque locatif');
+    const ensembleContenu = this.options1.find(option => option.label === 'Ensemble contenu');
+
+    if (batimentRisqueLocatif && ensembleContenu) {
+      const value1 = parseFloat((document.getElementById('capital-Batiment / risque locatif') as HTMLInputElement)?.value || '0');
+      const value2 = parseFloat((document.getElementById('capital-Ensemble contenu') as HTMLInputElement)?.value || '0');
+      const total = value1 + value2;
+      return total.toString();
+    } else {
+      return '-';
+    }
+}
 
   // Méthode pour générer le PDF
   generatePDF() {
@@ -128,25 +146,43 @@ export class ProprietairePage implements OnInit {
           </tr>
         </thead>
         <tbody>
-          ${this.options1.map(option => `
-            <tr  style="border-bottom: 1px solid #ddd;">
-              <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${option.showInputs ?
-               (document.getElementById(`capital-${option.label}`) as HTMLInputElement).value : '-'}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${option.calculatedCapital}</td>
-
-            </tr>
-              ${option.subOptions && option.showSubCheckboxes ? option.subOptions.map(subOption => `
+        ${this.options1
+          // Filtrer pour exclure "Toutes explosions"
+          .filter(option => option.label !== 'Toutes explosions')
+          .map(option => `
             <tr style="border-bottom: 1px solid #ddd;">
-              <td style="border: 1px solid #ddd; padding: 8px;">${subOption.label}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${option.label}</td>
               <td style="border: 1px solid #ddd; padding: 8px;">
-                ${subOption.showInputs ? (document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement).value : '-'}
+                ${option.showInputs ?
+                  (document.getElementById(`capital-${option.label}`) as HTMLInputElement).value : '-'}
               </td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${subOption.calculatedCapital}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">
+                ${option.calculatedCapital !== undefined ? option.calculatedCapital : '-'}
+              </td>
             </tr>
-          `).join('') : ''}
-        `).join('')}
-            <!-- Ajoutez ici le calcul du sous-total pour options1 -->
+            ${option.subOptions && option.showSubCheckboxes ? option.subOptions.map(subOption => `
+              <tr style="border-bottom: 1px solid #ddd;">
+                <td style="border: 1px solid #ddd; padding: 8px;">${subOption.label}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                  ${subOption.showInputs ?
+                    (document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement).value : '-'}
+                </td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                  ${subOption.calculatedCapital !== undefined ? subOption.calculatedCapital : '-'}
+                </td>
+              </tr>
+            `).join('') : ''}
+          `).join('')}
+        <!-- Ligne pour calculer et afficher "Toutes explosions" -->
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;">Toutes explosions</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">
+            ${this.calculateSommeBatimentEnsemble() || '-'}
+          </td>
+          <td style="border: 1px solid #ddd; padding: 8px;">-</td>
+        </tr>
+        <!-- Autres lignes du tableau -->
+        <!-- ... -->
         <tr style="border-bottom: 1px solid #ddd;">
           <td style="border: 1px solid #ddd; padding: 8px;" colspan="2">Sous-total</td>
           <td style="border: 1px solid #ddd; padding: 8px;">${this.sousTotal1}</td>
@@ -175,6 +211,7 @@ export class ProprietairePage implements OnInit {
             <td style="border: 1px solid #ddd; padding: 8px;" colspan="2" >Sous-total</td>
             <td style="border: 1px solid #ddd; padding: 8px;">${this.sousTotal3}</td>
           </tr>
+
 
           <tr>
           <td style="border: 1px solid #ddd; padding: 2px; colspan="2" >Taxe</td>
@@ -234,81 +271,103 @@ calculateSomeValue(subOption: any): number {
     this.showInput = !this.showInput;
   }
 
-    calculer() {
-        this.sousTotal1 = 0;
-        this.sousTotal2 = 0;
-        this.sousTotal3 = 0;
 
-        // Calcul pour options1
-        this.options1.forEach(option => {
-            if (option.showInputs) {
-                const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
-                if (option.label === 'Ensemble contenu') {
-                    option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
-                } else {
-                    if (this.buttonLabel === 'Non') {
-                        option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier * 12 * 15);
-                    } else {
-                        option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
-                    }
-                }
-                this.sousTotal1 += option.calculatedCapital || 0;
+  calculer() {
+    // Réinitialisation des sous-totaux et des valeurs calculées
+    this.sousTotal1 = 0;
+    this.sousTotal2 = 0;
+    this.sousTotal3 = 0;
+
+    // Calcul pour options1
+    this.options1.forEach(option => {
+      if (option.showInputs) {
+        const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
+        option.enteredValue = capitalInput; // Stocke la valeur entrée par l'utilisateur
+
+        // Calcul de la prime selon la logique spécifiée
+        if (option.label === 'Ensemble contenu') {
+          option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
+        } else {
+          if (this.buttonLabel === 'Non') {
+            option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier * 12 * 15);
+          } else {
+            option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
+          }
+        }
+
+        this.sousTotal1 += option.calculatedCapital || 0;
+      }
+
+      if (option.subOptions) {
+        option.subOptions.forEach(subOption => {
+          if (subOption.showInputs) {
+            const subCapitalInput = parseFloat((document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement).value);
+            subOption.enteredValue = subCapitalInput; // Stocke la valeur entrée par l'utilisateur
+
+            // Calcul de la prime pour la sous-option selon la logique spécifiée
+            if (subOption.label === 'Privation de jouissance') {
+              if (this.buttonLabel === 'Oui') {
+                subOption.calculatedCapital = Math.round((subCapitalInput ) * subOption.capitalMultiplier);
+              } else {
+                subOption.calculatedCapital = Math.round(subCapitalInput * subOption.capitalMultiplier );
+              }
+            } else {
+              subOption.calculatedCapital = Math.round(subCapitalInput * subOption.capitalMultiplier);
             }
 
-            if (option.subOptions) {
-                option.subOptions.forEach(subOption => {
-                    if (subOption.showInputs) {
-                        const subCapitalInput = parseFloat((document.getElementById(`sub-capital-${subOption.label}`) as HTMLInputElement).value);
-                        if (subOption.label === 'Privation de jouissance') {
-                            if (this.buttonLabel === 'Oui') {
-                                subOption.calculatedCapital = Math.round((subCapitalInput / 15) * subOption.capitalMultiplier);
-                            } else {
-                                subOption.calculatedCapital = Math.round(subCapitalInput * subOption.capitalMultiplier * 12);
-                            }
-                        } else {
-                            subOption.calculatedCapital = Math.round(subCapitalInput * subOption.capitalMultiplier);
-                        }
-                        this.sousTotal1 += subOption.calculatedCapital || 0;
-                    }
-                });
-            }
+            this.sousTotal1 += subOption.calculatedCapital || 0;
+          }
         });
+      }
+    });
 
 
-        // Calcul pour options2
-        this.options2.forEach(option => {
-            if (option.showInputs) {
-                const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
-                option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
-                this.sousTotal2 += option.calculatedCapital || 0;
-            }
-        });
 
-        // Calcul pour options3
-        this.options3.forEach(option => {
-            if (option.showInputs) {
-                const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
-                option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
-                this.sousTotal3 += option.calculatedCapital || 0;
-            }
-        });
+    // Calcul pour options2
+    this.options2.forEach(option => {
+      if (option.showInputs) {
+        const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
+        option.enteredValue = capitalInput; // Stocke la valeur entrée par l'utilisateur
+        option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
+        this.sousTotal2 += option.calculatedCapital || 0;
+      }
+    });
 
-        this.primeNette = this.sousTotal1 + this.sousTotal2 + this.sousTotal3;
-        this.taxe1 = Math.round((this.sousTotal1 + this.accessoire) * 0.2);
-        this.taxe2 = Math.round((this.sousTotal2 + this.sousTotal3) * 0.12);
-        this.taxeTotale = this.taxe1 + this.taxe2;
-        this.primeTtc = this.primeNette + this.taxeTotale + this.accessoire;
+    // Calcul pour options3
+    this.options3.forEach(option => {
+      if (option.showInputs) {
+        const capitalInput = parseFloat((document.getElementById(`capital-${option.label}`) as HTMLInputElement).value);
+        option.enteredValue = capitalInput; // Stocke la valeur entrée par l'utilisateur
+        option.calculatedCapital = Math.round(capitalInput * option.capitalMultiplier);
+        this.sousTotal3 += option.calculatedCapital || 0;
+      }
+    });
 
-        // Affichage pour débogage
-        console.log('===========this.options1===============', this.options1);
-        console.log('===========this.sousTotal1===============', this.sousTotal1);
+    // Calcul pour "Toutes explosions"
+  const batimentRisqueLocatifCapital = parseFloat((document.getElementById(`capital-Batiment / risque locatif`) as HTMLInputElement).value);
+  const ensembleContenuCapital = parseFloat((document.getElementById(`capital-Ensemble contenu`) as HTMLInputElement).value);
+  const toutesExplosionsCapital = batimentRisqueLocatifCapital + ensembleContenuCapital;
+  this.options1[3].calculatedCapital = toutesExplosionsCapital;
 
-        console.log('===========this.options2===============', this.options2);
-        console.log('===========this.sousTotal2===============', this.sousTotal2);
 
-        console.log('===========this.options3===============', this.options3);
-        console.log('===========this.sousTotal3===============', this.sousTotal3);
-    }
+    // Calculer les totaux et autres valeurs nécessaires
+    this.primeNette = this.sousTotal1 + this.sousTotal2 + this.sousTotal3;
+    this.taxe1 = Math.round((this.sousTotal1 + this.accessoire) * 0.2);
+    this.taxe2 = Math.round((this.sousTotal2 + this.sousTotal3) * 0.12);
+    this.taxeTotale = this.taxe1 + this.taxe2;
+    this.primeTtc = this.primeNette + this.taxeTotale + this.accessoire;
+
+    // Pour le débogage ou pour vérification
+    console.log('===========this.options1===============', this.options1);
+    console.log('===========this.sousTotal1===============', this.sousTotal1);
+
+    console.log('===========this.options2===============', this.options2);
+    console.log('===========this.sousTotal2===============', this.sousTotal2);
+
+    console.log('===========this.options3===============', this.options3);
+    console.log('===========this.sousTotal3===============', this.sousTotal3);
+  }
+
 
 
 
@@ -368,7 +427,9 @@ calculateSomeValue(subOption: any): number {
 
 
     // Appeler cette méthode pour générer le QR Code avec une URL spécifique
+    ngOnInit() {
 
+    }
 
 
 
